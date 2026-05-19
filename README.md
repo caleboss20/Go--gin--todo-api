@@ -8,7 +8,7 @@ A RESTful Todo API built with Golang for learning backend development and API de
 ├── internal
 │   ├── handlers
 │   └── models
-```
+
 ## Features
 - Create Todos
 - Retrieve Todos
