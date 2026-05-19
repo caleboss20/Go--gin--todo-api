@@ -14,12 +14,12 @@ A RESTful Todo API built with Golang for learning backend development and API de
 - Retrieve Todos
 - Update Todos
 - Delete Todos
-- 
+
 ## Tech Stack
 - Golang
 - net/http
 - gin
-- 
+ 
 ## Getting Started
 
 ### Clone the Repository
