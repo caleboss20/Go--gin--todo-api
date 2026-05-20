@@ -7,24 +7,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UpdateTodo(c *gin.Context) {
+func DeleteTodo(c *gin.Context) {
 	id := c.Param("id")
-	var todo models.Todo
 	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "id is required",
 		})
-		return
 	}
-
+	var todo models.Todo
 	err := c.ShouldBindJSON(&todo)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "Todo not found",
 		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"todo": todo,
+		"message": "todo deleted",
 	})
 }
