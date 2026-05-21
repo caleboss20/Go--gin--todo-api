@@ -12,7 +12,7 @@ func main() {
 	r.GET("/todo", handlers.GetAlltodos)
 	// r.GET("/todo/:id", GetATodo)
 	r.PUT("/todo/:id", handlers.UpdateTodo)
-	r.DELETE("/delete/:id", DeleteATodo)
+	r.DELETE("/delete/:id", handlers.DeleteTodo)
 
 	r.Run(":5000")
 
