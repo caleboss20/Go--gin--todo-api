@@ -5,6 +5,7 @@ import "todo-app/internal/db"
 //to query the database==for inserting or adding a todo to the database//
 func QueryCreatingTodo(title string) error {
 	_, err := db.DB.Exec(
+		//parametrised queries//
 		"INSERT INTO todos(title)VALUES($1)", title,
 	)
 	return err
