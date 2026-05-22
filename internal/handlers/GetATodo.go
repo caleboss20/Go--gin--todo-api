@@ -2,35 +2,35 @@ package handlers
 
 import (
 	"net/http"
-	"todo-app/internal/models"
+	"strconv"
 	"todo-app/internal/repository"
 
 	"github.com/gin-gonic/gin"
 )
 
-func UpdateTodo(c *gin.Context) {
+func GetATodo(c *gin.Context) {
 	id := c.Param("id")
-	var todo models.Todo
+
 	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "id is required",
+			"error": "invalid id",
 		})
 		return
 	}
 
-	err := c.ShouldBindJSON(&todo)
+	idInt, err := strconv.Atoi(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"error": "invalid id ",
 		})
 		return
 	}
 
-	//passing an argument title and id to the updatetodo repo so title is added to database via repo//
-	err = repository.UpdatingTodoQuery(todo.Title, todo.ID)
+	todo, err := repository.SelectQueryATodo(idInt)
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to update todo",
+			"error": "failed to get todo",
 		})
 		return
 	}
@@ -38,4 +38,5 @@ func UpdateTodo(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"todo": todo,
 	})
+
 }

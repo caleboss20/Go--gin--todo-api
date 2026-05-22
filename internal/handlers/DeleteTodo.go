@@ -2,7 +2,8 @@ package handlers
 
 import (
 	"net/http"
-	"todo-app/internal/models"
+	"strconv"
+	"todo-app/internal/repository"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,15 +14,26 @@ func DeleteTodo(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "id is required",
 		})
+		return
 	}
-	var todo models.Todo
-	err := c.ShouldBindJSON(&todo)
+	//converting the id to string//
+	idInt, err := strconv.Atoi(id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "Todo not found",
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid id",
 		})
 		return
 	}
+
+	//==calling the repository delete query==//
+	err = repository.DeleteTodoQuery(idInt)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "failed to delete todo",
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "todo deleted",
 	})

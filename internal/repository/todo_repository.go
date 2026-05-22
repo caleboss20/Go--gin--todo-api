@@ -14,7 +14,7 @@ func CreatingTodoQuery(title string) error {
 	return err
 }
 
-func UpdatatingTodoQuery(title string, id int) error {
+func UpdatingTodoQuery(title string, id int) error {
 	_, err := db.DB.Exec(
 		"UPDATE todos SET title=$1 WHERE id=$2", title, id,
 	)

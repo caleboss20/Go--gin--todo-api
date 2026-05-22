@@ -33,6 +33,7 @@ func CreateTodo(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "failed to create todo",
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
