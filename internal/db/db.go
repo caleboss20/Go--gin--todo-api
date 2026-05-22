@@ -2,30 +2,10 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 )
 
-// var DB *sql.DB
-
-// func Connect() {
-// 	var err error
-// 	//DSN==data sourcce name,how to find and connect to the database//s
-// 	dsn := "postgres://caleboss:__67myboss$12@localhost:5432/todoapp?sslmode=disable"
-// 	DB, err = sql.Open("pgx", dsn)
-// 	if err != nil {
-// 		log.Fatal("Database failed to open")
-
-// 	}
-
-// 	err = DB.Ping()
-// 	if err != nil {
-// 		log.Fatal("database failed to connect")
-
-// 	}
-
-// 	log.Println("database connected successfully")
-
-// }
 var DB *sql.DB
 
 func Connect() {
@@ -33,12 +13,11 @@ func Connect() {
 	dsn := "postgres://caleboss:password@localhost:5432/todoapp?sslmode=disable"
 	DB, err = sql.Open("pgx", dsn)
 	if err != nil {
-		log.Fatal("database failed to open")
+		log.Fatalf("database failed to open: %s, %v", dsn, err)
 	}
-
 	err = DB.Ping()
 	if err != nil {
-		log.Fatal("database failed to connect")
+		log.Fatalf("failed to reach database at: %s, %v", dsn, err)
 	}
-	log.Println("database connected successfully")
+	fmt.Println("Database connected successfully!")
 }
