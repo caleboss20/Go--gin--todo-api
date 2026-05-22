@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"database/sql"
 	"fmt"
 	"todo-app/internal/db"
 	"todo-app/internal/models"
@@ -52,7 +53,7 @@ func SelectQueryAllTodo() ([]models.Todo, error) {
 		"SELECT id,title,done FROM todos",
 	)
 	if err != nil {
-		fmt.Errorf("failed to fetch todos %v", err)
+		fmt.Errorf("failed to fetch todos :%v", err)
 	}
 	defer rows.Close()
 
@@ -64,5 +65,18 @@ func SelectQueryAllTodo() ([]models.Todo, error) {
 		todos = append(todos, t)
 	}
 	return todos, nil
+}
 
+func SelectQueryATodo(id int) (models.Todo, error) {
+	var t models.Todo
+	row := db.DB.QueryRow("SELECT id,title,done FROM todos WHERE id=$1", id)
+	err := row.Scan(&t.ID, &t.Title, &t.Done)
+
+	if err == sql.ErrNoRows {
+		return models.Todo{}, fmt.Errorf("todo with id %d not found", id)
+	}
+	if err != nil {
+		return models.Todo{}, fmt.Errorf("failed to fetch todo %d :%v", id, err)
+	}
+	return t, nil
 }
