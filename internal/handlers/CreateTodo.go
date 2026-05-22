@@ -1,15 +1,14 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"todo-app/internal/models"
+	"todo-app/internal/repository"
 
 	"github.com/gin-gonic/gin"
 )
 
 var todos []models.Todo
-var idCounter int = 1
 
 func CreateTodo(c *gin.Context) {
 	var todo models.Todo
@@ -26,13 +25,17 @@ func CreateTodo(c *gin.Context) {
 		})
 		return
 	}
-	todo.ID = idCounter
-	fmt.Println("ID", todo.ID)
-	idCounter++
-
 	todos = append(todos, todo)
+
+	//passing an argument title to the create todo repo so title is added to database via repo//
+	err = repository.CreatingTodoQuery(todo.Title)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "failed to create todo",
+		})
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"todo": todo,
-		// "id":   todo.ID,
 	})
 }

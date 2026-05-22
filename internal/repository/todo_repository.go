@@ -53,7 +53,7 @@ func SelectQueryAllTodo() ([]models.Todo, error) {
 		"SELECT id,title,done FROM todos",
 	)
 	if err != nil {
-		fmt.Errorf("failed to fetch todos :%v", err)
+		return nil, fmt.Errorf("failed to fetch todos :%v", err)
 	}
 	defer rows.Close()
 
