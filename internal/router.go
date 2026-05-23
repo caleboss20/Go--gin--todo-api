@@ -12,4 +12,6 @@ func SetUpRouter(r *gin.Engine) {
 	r.GET("/todo", handlers.GetAlltodos)
 	r.PUT("/todo/:id", handlers.UpdateTodo)
 	r.DELETE("/delete/:id", handlers.DeleteTodo)
+	r.PUT("/register", handlers.HandleRegister)
+	r.PUT("/login", handlers.HandleLogin)
 }

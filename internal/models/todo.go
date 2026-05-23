@@ -6,6 +6,7 @@ type Todo struct {
 	Done  bool   `json:"done"`
 }
 
+// for practice//
 type Bookings struct {
 	ID     int     `json:"id"`
 	Price  float64 `json:"price"`

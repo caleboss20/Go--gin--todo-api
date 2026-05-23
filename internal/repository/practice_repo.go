@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"database/sql"
 	"fmt"
 	"todo-app/internal/db"
 	"todo-app/internal/models"
@@ -66,8 +67,16 @@ func GetAllBookings() ([]models.Bookings, error) {
 
 }
 
-func GetATodo(id int) {
- row,err:=db.DB.QueryRow(
-	"SELECT id,title,done FROM todos WHERE id=$1",id
- )
+func GetATodo(id int) (models.Todo, error) {
+	var t models.Todo
+	row := db.DB.QueryRow("SELECT id,title,done FROM todos WHERE id=$1", id)
+	err := row.Scan(&t.ID, &t.Title, &t.Done)
+	if err == sql.ErrNoRows {
+		return models.Todo{}, fmt.Errorf("cannot find todo %d", id)
+	}
+	if err != nil {
+		return models.Todo{}, fmt.Errorf("failed to fetch todo item %d", id)
+	}
+
+	return t, nil
 }
