@@ -34,3 +34,15 @@ func RegisterUser(user models.User) error {
 
 	return nil
 }
+
+func Try(user models.User) error {
+	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
+	if err != nil {
+		return err
+	}
+	err = repository.RegisterUserQuery(user.Email, string(hash))
+	if err != nil {
+		return errors.New("failed to save user")
+	}
+	return nil
+}
