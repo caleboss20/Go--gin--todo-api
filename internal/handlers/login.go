@@ -10,6 +10,7 @@ import (
 
 func HandleLogin(c *gin.Context) {
 	var loginInput models.LoginInput
+
 	err := c.ShouldBindJSON(&loginInput)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -17,7 +18,7 @@ func HandleLogin(c *gin.Context) {
 		})
 		return
 	}
-
+	//call login service to handle logic
 	token, err := services.LoginUser(loginInput)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -25,6 +26,8 @@ func HandleLogin(c *gin.Context) {
 		})
 		return
 	}
+
+	//return response to user//
 	c.JSON(http.StatusOK, gin.H{
 		"token": token,
 	})

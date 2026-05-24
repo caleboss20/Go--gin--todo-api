@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"log"
+	"os"
 )
 
 //	func Connect() {
@@ -22,7 +23,7 @@ var DB *sql.DB
 
 func Connect() {
 	var err error
-	dsn := "postgres://username:password@localhost:5432/todoapp?sslmode=disable"
+	dsn := os.Getenv("DB_DSN")
 	DB, err = sql.Open("pgx", dsn)
 	if err != nil {
 		log.Fatalf("failed to open database %v", err)

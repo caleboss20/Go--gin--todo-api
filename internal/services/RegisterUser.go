@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"todo-app/internal/models"
 	"todo-app/internal/repository"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 func RegisterUser(user models.User) error {
@@ -16,7 +18,16 @@ func RegisterUser(user models.User) error {
 		return errors.New("weak password try another")
 	}
 
-	err := repository.RegisterUserQuery(user.Email, user.Password)
+	//hashing user password before adding to database//
+	//14 is the cost factor:controls how slow the hashing is
+	// higher=slower=harder to brute force attack//
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
+	if err != nil {
+		return err
+	}
+
+	//saving user to database
+	err = repository.RegisterUserQuery(user.Email, string(hashedPassword))
 	if err != nil {
 		return fmt.Errorf("failed to register user :%w", err)
 	}
