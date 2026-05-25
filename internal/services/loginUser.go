@@ -11,27 +11,25 @@ import (
 
 func LoginUser(loginInput models.LoginInput) (string, error) {
 
-	//look up requested user//
+	//find user by email//
 	user, err := repository.GetUserByEmail(loginInput.Email)
 	if err != nil {
-		return "", errors.New("invalid email or password")
+		return "", errors.New("invaid email or password")
 	}
+	//check if password is same as hashed password in db//
+	err = bcrypt.CompareHashAndPassword(
+		[]byte(user.Password),
+		[]byte(loginInput.Password))
 
-	//compare sent in password with saved user password hash//
-	//bring the hash password from db first,order matters//
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginInput.Password))
 	if err != nil {
 		return "", errors.New("invalid email or password")
 	}
 
-	//generate jwt token//
+	//create a token//
 	token, err := utils.GenerateJWT(user.Id)
 	if err != nil {
-		return "", err
+		return "", errors.New("failed to generate token")
 	}
-
-	//==========send back to user===to login handler=====//
-
-	return token, nil
-
+	//send token back to user//
+	return token, err
 }

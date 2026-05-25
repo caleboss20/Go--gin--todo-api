@@ -34,3 +34,18 @@ func GetUserByEmail(email string) (*models.User, error) {
 	return &user, nil
 
 }
+
+// practice for understanding//
+func GetUserByEmails(email string) (*models.User, error) {
+	var user models.User
+	query := `SELECT id,email,password FROM user WHERE email=$1`
+	row := db.DB.QueryRow(query, email)
+	err := row.Scan(&user.Id, &user.Email, &user.Password)
+	if err == sql.ErrNoRows {
+		return nil, errors.New("user not found")
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
