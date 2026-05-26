@@ -2,13 +2,14 @@ package handlers
 
 import (
 	"net/http"
+	"todo-app/internal/config"
 	"todo-app/internal/models"
 	"todo-app/internal/services"
 
 	"github.com/gin-gonic/gin"
 )
 
-func HandleLogin(c *gin.Context) {
+func HandleLogin(c *gin.Context, cfg *config.Config) {
 	var loginInput models.LoginInput
 
 	err := c.ShouldBindJSON(&loginInput)
@@ -19,7 +20,8 @@ func HandleLogin(c *gin.Context) {
 		return
 	}
 	//call login service to handle logic
-	token, err := services.LoginUser(loginInput)
+
+	token, err := services.LoginUser(loginInput, cfg)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"error": err.Error(),

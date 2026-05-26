@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"todo-app/internal/config"
 	"todo-app/internal/models"
 	"todo-app/internal/repository"
 	"todo-app/internal/utils"
@@ -9,7 +10,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func LoginUser(loginInput models.LoginInput) (string, error) {
+func LoginUser(loginInput models.LoginInput, cfg *config.Config) (string, error) {
 
 	//find user by email//
 	user, err := repository.GetUserByEmail(loginInput.Email)
@@ -26,7 +27,7 @@ func LoginUser(loginInput models.LoginInput) (string, error) {
 	}
 
 	//create a token//
-	token, err := utils.GenerateJWT(user.Id)
+	token, err := utils.GenerateJWT(user.Id, cfg)
 	if err != nil {
 		return "", errors.New("failed to generate token")
 	}
