@@ -2,11 +2,15 @@ package utils
 
 import (
 	"errors"
+	"todo-app/internal/config"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func ValidateJWT(tokenstring string) (int, error) {
+func ValidateJWT(tokenstring string, cfg *config.Config) (int, error) {
+	//jwtsecret being loaded here from config
+	jwtSecret := []byte(cfg.SECRETKEY)
+
 	//tokenstring ="ehf2gu2f433.... sent by client in header"//
 	//middleware will call this function and pass the token here to verify//
 	//jwt.parse opens the token string and breaks it into header,payload,signature//
@@ -16,13 +20,13 @@ func ValidateJWT(tokenstring string) (int, error) {
 	token, err := jwt.Parse(tokenstring, func(token *jwt.Token) (interface{}, error) {
 
 		//we check the algorithn is HS256 (HMAC family )//
-		//prevents:None Algorithm Attack+Algorithm Confusion Attack//
+		//prevents:None Algorithm Attack + Algorithm Confusion Attack//
 		_, ok := token.Method.(*jwt.SigningMethodHMAC)
 		if !ok {
 			return nil, errors.New("unexpected signing method")
 		}
 
-		//return our secret key so jwt.parse can verify the signature
+		//return our secret key so jwt.parse can verify the signature//
 		//prevents:Token Forgery Attack + Payload Tampering Attack
 		return jwtSecret, nil
 	})
