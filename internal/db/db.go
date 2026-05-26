@@ -3,33 +3,22 @@ package db
 import (
 	"database/sql"
 	"log"
-	"os"
+	"todo-app/internal/config"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-//	func Connect() {
-//		var err error
-//		dsn := "postgres://username:password@localhost:5432/todoapp?sslmode=disable"
-//		DB, err = sql.Open("pgx", dsn)
-//		if err != nil {
-//			log.Fatalf("database failed to open: %s, %v", dsn, err)
-//		}
-//		err = DB.Ping()
-//		if err != nil {
-//			log.Fatalf("failed to reach database at: %s, %v", dsn, err)
-//		}
-//		fmt.Println("Database connected successfully!")
-//	}
 var DB *sql.DB
 
-func Connect() {
+func Connect(cfg *config.Config) {
 	var err error
-	dsn := os.Getenv("DB_DSN")
-	DB, err := sql.Open("pgx", dsn)
+	//use cfg.DBurl instead of os.Getenv("DB_URL")
+	DB, err := sql.Open("pgx", cfg.DBUrl)
 	if err != nil {
 		log.Fatalf("failed to open database %v", err)
 	}
+
+	//ping to confirm connection is actually alive//
 
 	err = DB.Ping()
 	if err != nil {
