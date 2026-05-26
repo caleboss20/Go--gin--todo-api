@@ -18,7 +18,6 @@ type Config struct {
 func Load() *Config {
 	//read the .env file and load all variables into memory//
 	//if .env file is missing crash immediately with clear message//
-
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("error loading .env file")
@@ -28,9 +27,28 @@ func Load() *Config {
 	//& means return the memory address not a copy//
 
 	return &Config{
-		AppPort:   os.Getenv("APP_PORT"),
-		DBUrl:     os.Getenv("DB_URL"),
-		SECRETKEY: os.Getenv("JWT_SECRET"),
+		AppPort:   getEnv("APP_PORT", "8080"),
+		DBUrl:     MustGetEnv("DB_URL"),
+		SECRETKEY: MustGetEnv("JWT_SECRET"),
 	}
 
+}
+
+//optional-returns default value if missing//
+
+func getEnv(key string, defaultValue string) string {
+	value := os.Getenv(key)
+	if key == "" {
+		return defaultValue
+	}
+	return value
+}
+
+// mandatory-crashes app immediately if missing//
+func MustGetEnv(key string) string {
+	value := os.Getenv(key)
+	if value == "" {
+		log.Fatal("required envirinment variable missing :" + key)
+	}
+	return value
 }

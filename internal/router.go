@@ -12,6 +12,7 @@ func SetUpRouter(r *gin.Engine, cfg *config.Config) {
 
 	//public routes-anyone can hit these//
 	r.POST("/register", handlers.HandleRegister)
+
 	//closure bridges Gin's required func(c *gin.Context)signature//
 	//with our handler that needs cfg injected as second parameter//
 	r.POST("/login", func(c *gin.Context) {
