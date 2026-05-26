@@ -14,7 +14,7 @@ func main() {
 	db.Connect()
 	r := gin.Default()
 	internal.SetUpRouter(r)
-	fmt.Println("port sering on:5000")
+	fmt.Println("port serving on:5000")
 	r.Run(":5000")
 
 }

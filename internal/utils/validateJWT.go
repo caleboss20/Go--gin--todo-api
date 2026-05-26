@@ -12,17 +12,18 @@ func ValidateJWT(tokenstring string) (int, error) {
 	//jwt.parse opens the token string and breaks it into header,payload,signature//
 
 	//parse the token string and verify it using our secret key//
-	//during parsing jwt.parse calls this callback asking "what key should i use? "//
+	//during parsing jwt.parse calls this callback func asking "what key should i use? "//
 	token, err := jwt.Parse(tokenstring, func(token *jwt.Token) (interface{}, error) {
 
 		//we check the algorithn is HS256 (HMAC family )//
 		//prevents:None Algorithm Attack+Algorithm Confusion Attack//
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+		_, ok := token.Method.(*jwt.SigningMethodHMAC)
+		if !ok {
 			return nil, errors.New("unexpected signing method")
 		}
 
 		//return our secret key so jwt.parse can verify the signature
-		//prevents:Token Forgery Attack+Payload Tampering Attack
+		//prevents:Token Forgery Attack + Payload Tampering Attack
 		return jwtSecret, nil
 	})
 	//jwt.Parse failed meaning token is invalid ,tampered,or expired
@@ -39,7 +40,7 @@ func ValidateJWT(tokenstring string) (int, error) {
 		return 0, errors.New("invalid token")
 	}
 	// read the userID we stored inside the token in GenerateJWT
-	// comes back as float64 because JWT stores all numbers as JSON numbers internally
+	// ussrID comes back as float64 because JWT stores all numbers as JSON numbers internally
 	// PREVENTS: Claims Injection Attack (we only read what we stored)
 	userId, ok := claims["userID"].(float64)
 	if !ok {

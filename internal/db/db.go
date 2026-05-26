@@ -26,16 +26,13 @@ var DB *sql.DB
 func Connect() {
 	var err error
 	dsn := os.Getenv("DB_DSN")
-	DB, err = sql.Open("pgx", dsn)
+	DB, err := sql.Open("pgx", dsn)
 	if err != nil {
 		log.Fatalf("failed to open database %v", err)
-
 	}
 
 	err = DB.Ping()
 	if err != nil {
-		log.Fatalf("failed to reach database %v", err)
-
+		log.Fatalf("failed to connect to database %v", err)
 	}
-
 }

@@ -15,6 +15,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		authHeader := c.GetHeader("Authorization")
 
 		//if no token was sent at all block immediately//
+
 		if authHeader == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"error": "authorization header required",
@@ -24,9 +25,10 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		//split "Bearer eyjhbg...into["bearer","eyjhbg..."]//
-		parts := strings.Split(authHeader, "")
-		//must have exactly two parts and first part must be Bearer//
+		//the empty string here must have a space else would split every single character//
+		parts := strings.Split(authHeader, " ")
 
+		//must have exactly two parts and first part must be Bearer//
 		if len(parts) != 2 || parts[0] != "Bearer" {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"error": "invalid authorization format",
@@ -38,7 +40,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		//parts[1] is the raw token "eyjhbg..."
 		tokenString := parts[1]
 
-		//pass raw token to ValidateJWT to erify and extract UserId//
+		//pass raw token to ValidateJWT to verify and extract UserId//
 		userId, err := utils.ValidateJWT(tokenString)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
