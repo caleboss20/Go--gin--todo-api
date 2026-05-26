@@ -3,12 +3,13 @@ package middleware
 import (
 	"net/http"
 	"strings"
+	"todo-app/internal/config"
 	"todo-app/internal/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware() gin.HandlerFunc {
+func AuthMiddleware(cfg *config.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		//grab the full "Bearer  eyjhbg...from the request header"
@@ -41,7 +42,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		tokenString := parts[1]
 
 		//pass raw token to ValidateJWT to verify and extract UserId//
-		userId, err := utils.ValidateJWT(tokenString)
+		userId, err := utils.ValidateJWT(tokenString, cfg)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"error": "invalid or expired token",
