@@ -21,15 +21,16 @@ func SetUpRouter(r *gin.Engine, cfg *config.Config) {
 
 	//protected routes- must have valid JWT//
 	//protected ensuring each routes is been protected like a firewall//
+
 	protected := r.Group("/")
 	protected.Use(middleware.AuthMiddleware(cfg))
-	{
 
-		protected.POST("/createtodo", handlers.CreateTodo)
-		protected.GET("/gettodo", handlers.GetATodo)
-		protected.GET("/todo", handlers.GetAlltodos)
-		protected.PUT("/todo/:id", handlers.UpdateTodo)
-		protected.DELETE("/delete/:id", handlers.DeleteTodo)
+	{
+		protected.GET("/api/todo", handlers.GetAlltodos)
+		protected.GET("/api/todos", handlers.GetATodo)
+		protected.POST("/api/todos", handlers.CreateTodo)
+		protected.PUT("/api/todo/:id", handlers.UpdateTodo)
+		protected.DELETE("api/todo/:id", handlers.DeleteTodo)
 
 	}
 

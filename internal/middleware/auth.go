@@ -37,11 +37,12 @@ func AuthMiddleware(cfg *config.Config) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
+		//so middleware extract the header and pass the token into validatejwt//
 		//parts[1] is the raw token "eyjhbg..."
 		tokenString := parts[1]
 
-		//pass raw token to ValidateJWT to verify and extract UserId//
+		//pass raw token to ValidateJWT to verify and extract UserId from validate token//
+		//the userId comes from validate token function which returned the id//
 		userId, err := utils.ValidateJWT(tokenString, cfg)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
@@ -51,6 +52,8 @@ func AuthMiddleware(cfg *config.Config) gin.HandlerFunc {
 			return
 		}
 		//store userId in context so handlers can access it//
+		//means save authenticated user's id inside this request context//
+		//to still help handlers know who user is after middleware finishes//
 		c.Set("userId", userId)
 
 		//everything passed then let request through to handler//

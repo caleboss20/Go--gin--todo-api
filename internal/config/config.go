@@ -15,6 +15,8 @@ type Config struct {
 	SECRETKEY string
 }
 
+//*Config means this function returns a pointer to Config-a memory address,not a copy.
+
 func Load() *Config {
 	//read the .env file and load all variables into memory//
 	//if .env file is missing crash immediately with clear message//
@@ -23,7 +25,7 @@ func Load() *Config {
 		log.Fatal("error loading .env file")
 	}
 	//create a new Config struct and fill each field
-	//with its matching alue from the .env file
+	//with its matching value from the .env file
 	//& means return the memory address not a copy//
 
 	return &Config{

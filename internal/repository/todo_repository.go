@@ -48,9 +48,9 @@ func DeleteTodoQuery(id int) error {
 
 // }
 
-func SelectQueryAllTodo() ([]models.Todo, error) {
+func SelectQueryAllTodo(userId int) ([]models.Todo, error) {
 	rows, err := db.DB.Query(
-		"SELECT id,title,done FROM todos",
+		"SELECT id,title,done FROM todos WHERE user_id=$1", userId,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch todos :%v", err)

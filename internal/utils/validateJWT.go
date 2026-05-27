@@ -28,7 +28,8 @@ func ValidateJWT(tokenstring string, cfg *config.Config) (int, error) {
 
 		//return our secret key so jwt.parse can verify the signature//
 		//prevents:Token Forgery Attack + Payload Tampering Attack
-		return jwtSecret, nil
+		return jwtSecret, nil //this is the key it tell it to use//
+
 	})
 	//jwt.Parse failed meaning token is invalid ,tampered,or expired
 	//Prevents:Expired Token Reuse Attack+Signature Stripping attack//
@@ -44,7 +45,7 @@ func ValidateJWT(tokenstring string, cfg *config.Config) (int, error) {
 		return 0, errors.New("invalid token")
 	}
 	// read the userID we stored inside the token in GenerateJWT
-	// ussrID comes back as float64 because JWT stores all numbers as JSON numbers internally
+	// userID comes back as float64 because JWT stores all numbers as JSON numbers internally
 	// PREVENTS: Claims Injection Attack (we only read what we stored)
 	userId, ok := claims["userID"].(float64)
 	if !ok {
