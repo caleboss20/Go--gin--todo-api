@@ -13,6 +13,7 @@ import (
 
 func GenerateJWT(userId int, cfg *config.Config) (string, error) {
 	var jwtSecret = []byte(cfg.SECRETKEY)
+	//the payload//
 	claims := jwt.MapClaims{
 		"userID": userId,
 		"exp":    time.Now().Add(time.Hour * 24).Unix(),

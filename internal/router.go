@@ -15,9 +15,10 @@ func SetUpRouter(r *gin.Engine, cfg *config.Config) {
 
 	//closure bridges Gin's required func(c *gin.Context)signature//
 	//with our handler that needs cfg injected as second parameter//
-	r.POST("/login", func(c *gin.Context) {
-		handlers.HandleLogin(c, cfg)
-	})
+	r.POST("/login",
+		func(c *gin.Context) {
+			handlers.HandleLogin(c, cfg)
+		})
 
 	//protected routes- must have valid JWT//
 	//protected ensuring each routes is been protected like a firewall//

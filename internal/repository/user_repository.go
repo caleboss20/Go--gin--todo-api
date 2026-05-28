@@ -31,16 +31,3 @@ func GetUserByEmail(email string) (*models.User, error) {
 	}
 	return &user, nil
 }
-
-// practice//
-func GetUserByEmails(email string) (*models.User, error) {
-	var item models.User
-	query := `SELECT id,email,password FROM users WHERE email=$1`
-	row := db.DB.QueryRow(query, email)
-	err := row.Scan(&item.Id, &item.Email, &item.Password)
-	if err != nil {
-		return nil, fmt.Errorf("failed to fetch user")
-	}
-	return &item, nil
-
-}
