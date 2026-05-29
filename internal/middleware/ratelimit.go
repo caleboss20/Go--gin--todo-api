@@ -1,47 +1,48 @@
 package middleware
 
 import (
-	"sync"
+	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
-//this is a fixed Window (Rate limiting) Counter Algorith//
+// type RateLimiter struct {
+// 	Requests map[string]int
+// 	mu       sync.Mutex
+// 	Limit    int
+// }
 
-// stores requests counts fo each ip address
-// and protects the shared map using a mutex.//
-type RateLimiter struct {
-	requests map[string]int
-	mu       sync.Mutex
-	//mutex prevent race conditions and race condition exploits//
-	//eg====>prevent TOCTOU(time of check to time of use)
-}
-
-// limiter is one shared rate limiter instance used.
-// by the entire server to track incoming requests.//
-// using a package level variable architecture//
-var limiter = &RateLimiter{
-	//make to prepare map /
-	//allocate memory and prepare this map for use//
+var Limiter = &RateLimiter{
 	requests: make(map[string]int),
+	limit:    5,
 }
 
-// when app starts,start the
-//
-//	rate-limit reset system automatically//
-//
-// init here is a go reserved word to say run before main() runs//
-// resets request counts every minute.//
-func init() {
-	//create anonymous func,immediately run it//
-	//Run it as a goroutine in background//
+//init is a special go function that runs automatically when app starts//
 
+func init() {
 	go func() {
-		for {
-			time.Sleep(time.Minute)
-			limiter.mu.Lock()
-			//reset all request counts//
-			limiter.requests = make(map[string]int)
-			limiter.mu.Unlock()
-		}
+		time.Sleep(time.Minute)
+		limiter.mu.Lock()
+		limiter.requests = make(map[string]int)
+		limiter.mu.Unlock()
 	}()
+}
+
+func FixedWindowRateLimiting(c *gin.Context) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ip := c.ClientIP()
+		limiter.mu.Lock()
+		//schedule cleanup:release the lock before returning.//
+		defer limiter.mu.Unlock()
+		limiter.requests[ip]++
+		if limiter.requests[ip] > limiter.limit {
+			c.JSON(http.StatusTooManyRequests, gin.H{
+				"error": "too many requests",
+			})
+			c.Abort()
+			return
+		}
+		c.Next()
+	}
 }

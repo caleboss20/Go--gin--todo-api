@@ -15,6 +15,7 @@ func RegisterUserQuery(email string, password string) error {
 	if err != nil {
 		return fmt.Errorf("failed to save user %v", err)
 	}
+
 	return nil
 }
 
