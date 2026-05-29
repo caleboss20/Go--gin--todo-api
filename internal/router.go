@@ -15,8 +15,10 @@ func SetUpRouter(r *gin.Engine, cfg *config.Config) {
 
 	//closure bridges Gin's required func(c *gin.Context)signature//
 	//with our handler that needs cfg injected as second parameter//
-	r.POST("/login", func(c *gin.Context) {
+	//add the rate limiting middleware to the router before the route runs on a request//
+	r.POST("/login", middleware.FixedWindowRateLimit(), func(c *gin.Context) {
 		handlers.HandleLogin(c, cfg)
+
 	})
 
 	//protected routes- must have valid JWT//
@@ -26,8 +28,8 @@ func SetUpRouter(r *gin.Engine, cfg *config.Config) {
 	protected.Use(middleware.AuthMiddleware(cfg))
 
 	{
-		protected.GET("/api/todo", handlers.GetAlltodos)
-		protected.GET("/api/todos", handlers.GetATodo)
+		protected.GET("/api/todos", handlers.GetAlltodos)
+		protected.GET("/api/todo/:id", handlers.GetATodo)
 		protected.POST("/api/todos", handlers.CreateTodo)
 		protected.PUT("/api/todo/:id", handlers.UpdateTodo)
 		protected.DELETE("api/todo/:id", handlers.DeleteTodo)
