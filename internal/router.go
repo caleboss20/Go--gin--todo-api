@@ -30,7 +30,7 @@ func SetUpRouter(r *gin.Engine, cfg *config.Config) {
 	{
 		protected.GET("/api/todos", handlers.GetAlltodos)
 		protected.GET("/api/todo/:id", handlers.GetATodo)
-		protected.POST("/api/todos", handlers.CreateTodo)
+		protected.POST("/api/todos", middleware.LessStrictLimiter(), handlers.CreateTodo)
 		protected.PUT("/api/todo/:id", handlers.UpdateTodo)
 		protected.DELETE("api/todo/:id", handlers.DeleteTodo)
 
